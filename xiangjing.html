@@ -7,17 +7,17 @@
   <script src="china.js"></script>
   <style>
     :root {
-      --primary-color: #3a7bd5;
-      --secondary-color: #00d2ff;
-      --tertiary-color: #FAC858;
-      --text-color: #333;
-      --title-color: #2c3e50;
-      --bg-color: #f8fafc;
-      --card-bg: #fff;
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --primary-color: #00BFA5;
+      --secondary-color: #64FFDA;
+      --tertiary-color: #1DE9B6;
+      --text-color: #263238;
+      --title-color: #004D40;
+      --bg-color: #E0F2F1;
+      --card-bg: #FFFFFF;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       --border-radius: 16px;
       --font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-      --header-bg: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+      --header-bg: linear-gradient(135deg, #00BFA5 0%, #64FFDA 100%);
       --header-text: #fff;
     }
     
@@ -90,6 +90,28 @@
       background: var(--header-bg);
       opacity: 0.7;
     }
+    
+    /* 添加科技感背景 */
+    .chart-box::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 10% 90%, rgba(0, 191, 165, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(100, 255, 218, 0.03) 0%, transparent 30%),
+        linear-gradient(135deg, rgba(0, 191, 165, 0.01) 0%, rgba(29, 233, 182, 0.01) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    /* 确保图表内容在背景之上 */
+    .chart-box > div {
+      position: relative;
+      z-index: 1;
+    }
 
     #left-top     { grid-column: 1; grid-row: 1; }
     #left-bottom  { grid-column: 1; grid-row: 2; }
@@ -111,17 +133,17 @@
   <script>
     // 统一主题配置
     const theme = {
-      colors: ['#3a7bd5', '#00d2ff', '#FAC858', '#3BA272', '#73C0DE', '#EE6666', '#FC8452', '#9A60B4', '#EA7CCC'],
+      colors: ['#00BFA5', '#64FFDA', '#1DE9B6', '#26A69A', '#80CBC4', '#4DB6AC', '#009688', '#00897B', '#00796B'],
       textStyle: {
         fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-        color: '#333',
+        color: '#263238',
         fontSize: 14
       },
       titleStyle: {
         textStyle: {
           fontSize: 16,
           fontWeight: 'bold',
-          color: '#2c3e50',
+          color: '#004D40',
           fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif'
         },
         left: 'center',
@@ -145,12 +167,12 @@
       tooltipStyle: {
         trigger: 'item',
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#eee',
+        borderColor: '#80CBC4',
         borderWidth: 1,
         padding: 10,
         textStyle: {
           fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-          color: '#333',
+          color: '#263238',
           fontSize: 12
         },
         extraCssText: 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 4px;'
@@ -241,10 +263,12 @@
           name: '产品A',
           type: 'line',
           smooth: true,
-          symbol: 'circle',
-          symbolSize: 6,
+          symbol: 'emptyCircle',
+          symbolSize: 8,
           lineStyle: {
-            width: 3
+            width: 3,
+            shadowColor: 'rgba(0, 191, 165, 0.3)',
+            shadowBlur: 10
           },
           itemStyle: {
             borderWidth: 2
@@ -255,10 +279,12 @@
           name: '产品B',
           type: 'line',
           smooth: true,
-          symbol: 'circle',
-          symbolSize: 6,
+          symbol: 'emptyCircle',
+          symbolSize: 8,
           lineStyle: {
-            width: 3
+            width: 3,
+            shadowColor: 'rgba(0, 191, 165, 0.3)',
+            shadowBlur: 10
           },
           itemStyle: {
             borderWidth: 2
@@ -269,10 +295,12 @@
           name: '产品C',
           type: 'line',
           smooth: true,
-          symbol: 'circle',
-          symbolSize: 6,
+          symbol: 'emptyCircle',
+          symbolSize: 8,
           lineStyle: {
-            width: 3
+            width: 3,
+            shadowColor: 'rgba(0, 191, 165, 0.3)',
+            shadowBlur: 10
           },
           itemStyle: {
             borderWidth: 2
@@ -408,7 +436,7 @@
         text: ['高', '低'],
         calculable: true,
         inRange: {
-          color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
+          color: ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#00897B']
         },
         textStyle: theme.textStyle
       },
@@ -589,26 +617,33 @@
           { name: '品牌知名度', max: 100 },
           { name: '用户满意度', max: 100 },
           { name: '售后服务', max: 100 },
-          { name: '成本控制', max: 100, axisLabel: { show: true, fontSize: 10, color: '#666' } }
+          { name: '成本控制', max: 100 }
         ],
         radius: '75%',
         center: ['50%', '60%'],
         splitNumber: 4,
+        shape: 'polygon',
         axisName: {
-          color: '#666',
-          fontSize: 12
+          color: '#00796B',
+          fontSize: 12,
+          backgroundColor: 'rgba(100, 255, 218, 0.1)',
+          borderRadius: 3,
+          padding: [3, 5]
         },
         splitLine: {
           lineStyle: {
-            color: 'rgba(0, 0, 0, 0.1)'
+            color: 'rgba(0, 191, 165, 0.2)'
           }
         },
         splitArea: {
-          show: false
+          show: true,
+          areaStyle: {
+            color: ['rgba(0, 191, 165, 0.02)', 'rgba(0, 191, 165, 0.05)']
+          }
         },
         axisLine: {
           lineStyle: {
-            color: 'rgba(0, 0, 0, 0.1)'
+            color: 'rgba(0, 191, 165, 0.3)'
           }
         }
       },

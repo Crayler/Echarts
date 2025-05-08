@@ -11,299 +11,313 @@
       height: 100%;
       width: 100%;
       font-family: 'Microsoft YaHei', sans-serif;
-      background-color: #f5f7fa;
+      background-color: #fffcf0;
       color: #333;
     }
 
     h1 {
       text-align: center;
-      margin: 20px 0;
-      font-size: 26px;
-      color: #2c3e50;
+      margin: 0;
+      padding: 15px 0;
+      font-size: 24px;
+      color: #333;
+      background-color: #fffcf0;
+      border-bottom: 1px solid #eee8d5;
     }
 
     .container {
       display: grid;
-      grid-template-columns: 1fr 1.5fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      grid-gap: 10px;
+      grid-gap: 15px;
       height: calc(100% - 60px);
-      padding: 10px;
+      padding: 15px;
     }
 
     .chart-box {
       background: #fff;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       padding: 10px;
+      position: relative;
     }
 
-    #left-top     { grid-column: 1; grid-row: 1; }
-    #left-bottom  { grid-column: 1; grid-row: 2; }
-    #center       { grid-column: 2; grid-row: 1 / span 2; }
-    #right-top    { grid-column: 3; grid-row: 1; }
-    #right-bottom { grid-column: 3; grid-row: 2; }
+    .chart-title {
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>2024年全国各地销售情况分析</h1>
+  <h1>2024年七月销售业相关数据可视化报表</h1>
   <div class="container">
-    <div id="left-top" class="chart-box"></div>
-    <div id="left-bottom" class="chart-box"></div>
-    <div id="center" class="chart-box"></div>
-    <div id="right-top" class="chart-box"></div>
-    <div id="right-bottom" class="chart-box"></div>
+    <div class="chart-box">
+      <div class="chart-title">一周内各数量统计</div>
+      <div id="bar-chart" style="width: 100%; height: 90%;"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">数据来源饼图</div>
+      <div id="pie-chart" style="width: 100%; height: 90%;"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">一周内各数量变化趋势</div>
+      <div id="line-chart" style="width: 100%; height: 90%;"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">一周内客户质量达标图</div>
+      <div id="radar-chart" style="width: 100%; height: 90%;"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">各地区展客源客流量分布</div>
+      <div id="sunburst-chart" style="width: 100%; height: 90%;"></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">客户量与成交率的时间相关性</div>
+      <div id="scatter-chart" style="width: 100%; height: 90%;"></div>
+    </div>
   </div>
 
   <script>
-    const themeColors = ['#5470C6', '#91CC75', '#FAC858'];
-    const globalTextStyle = {
+    // 配色方案
+    const colors = ['#f8b195', '#f67280', '#c06c84', '#6c5b7b', '#355c7d', '#99b898'];
+    
+    // 基础样式
+    const textStyle = {
       fontFamily: 'Microsoft YaHei, sans-serif',
-      color: '#333',
-      fontSize: 14
+      color: '#555',
+      fontSize: 12
     };
-    const globalTitleStyle = {
+    
+    const titleStyle = {
       textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#2c3e50',
-        fontFamily: 'Microsoft YaHei'
+        fontSize: 14,
+        fontWeight: 'normal',
+        color: '#555'
       },
-      left: 'center'
+      left: 'center',
+      top: 5
     };
-    const globalGrid = {
-      top: '20%',
-      left: '10%',
-      right: '10%',
-      bottom: '15%'
-    };
-
-    function createChart(id, option, onClick) {
+    
+    // 创建图表函数
+    function createChart(id, option) {
       const chart = echarts.init(document.getElementById(id));
       chart.setOption(option);
       window.addEventListener('resize', () => chart.resize());
-      if (onClick) chart.on('click', onClick);
       return chart;
     }
-
-    const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-
-    function getCitySalesData(city) {
-      const base = Math.floor(Math.random() * 1000 + 500);
-      return months.map(() => Math.floor(base + Math.random() * 500));
-    }
-
-    function getCityProductData(city) {
-      const base = Math.floor(Math.random() * 100 + 50);
-      const randomSeries = () => Array.from({ length: 12 }, () => Math.floor(base + Math.random() * 50));
-      return {
-        '产品A': randomSeries(),
-        '产品B': randomSeries(),
-        '产品C': randomSeries()
-      };
-    }
-
-    function getCityProfitData(city) {
-      const base = Math.floor(Math.random() * 1000 + 500);
-      const randomSeries = () => Array.from({ length: 12 }, () => Math.floor(base + Math.random() * 500));
-      return {
-        '产品A': randomSeries(),
-        '产品B': randomSeries(),
-        '产品C': randomSeries()
-      };
-    }
-
-    let lineChart = createChart('left-top', {
-      color: themeColors,
-      title: Object.assign({ text: '上海年度销售利润趋势' }, globalTitleStyle),
-      tooltip: { trigger: 'axis', textStyle: globalTextStyle },
-      legend: { data: ['产品A', '产品B', '产品C'], top: '10%', textStyle: globalTextStyle },
-      grid: globalGrid,
-      xAxis: { type: 'category', data: months },
-      yAxis: { type: 'value' },
-      series: [
-        { name: '产品A', type: 'line', smooth: true, data: getCityProfitData('上海')['产品A'] },
-        { name: '产品B', type: 'line', smooth: true, data: getCityProfitData('上海')['产品B'] },
-        { name: '产品C', type: 'line', smooth: true, data: getCityProfitData('上海')['产品C'] }
-      ]
-    });
-
-    let barChart = createChart('left-bottom', {
-      color: themeColors,
-      title: Object.assign({ text: '上海三种产品销售情况' }, globalTitleStyle),
-      tooltip: { trigger: 'axis', textStyle: globalTextStyle },
-      legend: { data: ['产品A', '产品B', '产品C'], top: '10%', textStyle: globalTextStyle },
-      grid: globalGrid,
-      xAxis: { type: 'category', data: months },
-      yAxis: { type: 'value' },
-      series: [
-        { name: '产品A', type: 'bar', data: getCityProductData('上海')['产品A'] },
-        { name: '产品B', type: 'bar', data: getCityProductData('上海')['产品B'] },
-        { name: '产品C', type: 'bar', data: getCityProductData('上海')['产品C'] }
-      ]
-    });
-
-    const mapData = [ { name: '北京', value: 1205 },
-        { name: '上海', value: 2000 },
-        { name: '广州', value: 1500 },
-        { name: '湖北', value: 8450 },
-        { name: '四川', value: 7800 },
-        { name: '山西', value: 1100 },
-        { name: '陕西', value: 3945 },
-        { name: '重庆', value: 1300 },
-        { name: '江苏', value: 6050 },
-        { name: '江西', value: 140 },
-        { name: '新疆', value: 2585 },
-        { name: '西藏', value: 7675 },
-        { name: '青海', value: 6465 },
-        { name: '黑龙江', value: 1560 },
-        { name: '吉林', value: 7100 },
-        { name: '辽宁', value: 1810 },
-        { name: '内蒙古', value: 5000 },
-        { name: '福建', value: 4100 },
-        { name: '广东', value: 1100 },
-        { name: '甘肃', value: 5737 },
-        { name: '云南', value: 1100 },
-        { name: '浙江', value: 4110 },
-        { name: '山东', value: 7100 },
-        { name: '安徽', value: 2110 },
-        { name: '贵州', value: 1510 },
-        { name: '广西', value: 5780 },
-        { name: '海南', value: 3100 },
-        { name: '台湾', value: 1340 },
-        { name: '天津', value: 1110 },
-        { name: '河北', value: 5150 },
-        { name: '香港', value: 9100 },
-        { name: '宁夏', value: 1710 },
-        { name: '河南', value: 5430 },
-        { name: '湖南', value: 9700 },
-    ]; 
-
-    createChart('center', {
-      color: themeColors,
-      title: Object.assign({ text: '全国销售地图' }, globalTitleStyle),
-      tooltip: {
-        trigger: 'item',
-        formatter: params => `${params.name}: ${params.value || 0} 销售额`,
-        textStyle: globalTextStyle
+    
+    // 模拟数据
+    const regions = ['南部', '宁夏', '湖南', '湖北', '北京', '福建', '上海', '西区'];
+    const products = ['产品A', '产品B'];
+    
+    // 柱状图
+    createChart('bar-chart', {
+      color: colors,
+      tooltip: { trigger: 'axis' },
+      legend: {
+        data: products,
+        top: 25,
+        textStyle: textStyle
       },
-      visualMap: {
-        min: 0, max: 10000,
-        left: 'left', top: 'bottom',
-        text: ['高', '低'], calculable: true,
-        textStyle: globalTextStyle
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        top: '20%',
+        containLabel: true
       },
-      series: [{
-        name: '销售额',
-        type: 'map',
-        map: 'china',
-        roam: true,
-        label: { show: true },
-        data: mapData
-      }]
-    }, function (params) {
-      const city = params.name;
-      const newSales = getCitySalesData(city);
-      const newProducts = getCityProductData(city);
-
-      lineChart.setOption({
-        title: { text: `${city}年度销售利润趋势` },
-        series: [
-          { name: '产品A', data: getCityProfitData(city)['产品A'] },
-          { name: '产品B', data: getCityProfitData(city)['产品B'] },
-          { name: '产品C', data: getCityProfitData(city)['产品C'] }
-        ]
-      });
-
-      barChart.setOption({
-        title: { text: `${city}三种产品销售情况` },
-        series: [
-          { name: '产品A', data: newProducts['产品A'] },
-          { name: '产品B', data: newProducts['产品B'] },
-          { name: '产品C', data: newProducts['产品C'] }
-        ]
-      });
-    });
-
-    const regionMap = {
-      '华东': ['上海', '江苏', '浙江', '山东', '安徽', '福建', '江西'],
-      '华北': ['北京', '天津', '河北', '山西', '内蒙古'],
-      '西北': ['陕西', '甘肃', '青海', '宁夏', '新疆'],
-      '西南': ['四川', '重庆', '云南', '贵州', '西藏'],
-      '华中': ['河南', '湖北', '湖南']
-    };
-    const regionTotals = { '华东': 0, '华北': 0, '西北': 0, '西南': 0, '华中': 0, '其他地区': 0 };
-    mapData.forEach(item => {
-      let added = false;
-      for (const region in regionMap) {
-        if (regionMap[region].includes(item.name)) {
-          regionTotals[region] += item.value;
-          added = true;
-          break;
+      xAxis: {
+        type: 'category',
+        data: regions,
+        axisLabel: {
+          interval: 0,
+          rotate: 30
         }
-      }
-      if (!added) regionTotals['其他地区'] += item.value;
+      },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: '产品A',
+          type: 'bar',
+          data: [50, 60, 12, 43, 45, 65, 55, 30]
+        },
+        {
+          name: '产品B',
+          type: 'bar',
+          data: [25, 50, 45, 20, 30, 20, 85, 40]
+        }
+      ]
     });
-    const totalSales = Object.values(regionTotals).reduce((sum, val) => sum + val, 0);
-    const regionSalesData = Object.entries(regionTotals).map(([name, value]) => ({ name, value }));
-
-    createChart('right-top', {
-      color: themeColors,
-      title: Object.assign({ text: '各大区年度销售占比' }, globalTitleStyle),
+    
+    // 饼图
+    createChart('pie-chart', {
+      color: colors,
       tooltip: {
         trigger: 'item',
-        formatter: params => {
-          const percent = ((params.value / totalSales) * 100).toFixed(2);
-          return `${params.name}<br/>销售额: ${params.value}<br/>占比: ${percent}%`;
-        },
-        textStyle: globalTextStyle
+        formatter: '{b}: {c} ({d}%)'
       },
       series: [{
-        name: '销售占比',
         type: 'pie',
-        radius: '60%',
-        data: regionSalesData,
+        radius: '65%',
+        center: ['50%', '55%'],
+        data: [
+          { value: 335, name: '北京大学' },
+          { value: 310, name: '清华大学' },
+          { value: 234, name: '武汉大学' },
+          { value: 135, name: '复旦大学' },
+          { value: 548, name: '四川大学' }
+        ],
+        label: {
+          formatter: '{b}\n{d}%'
+        },
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
-        },
-        label: {
-          formatter: '{b}: {d}%',
-          fontSize: 12
         }
       }]
     });
-
-    createChart('right-bottom', {
-      color: themeColors,
-      title: Object.assign({ text: '同行业同产品竞争力分析' }, globalTitleStyle),
-      tooltip: { trigger: 'item', textStyle: globalTextStyle },
+    
+    // 折线图
+    createChart('line-chart', {
+      color: colors,
+      tooltip: { trigger: 'axis' },
       legend: {
-        data: ['产品A', '产品B', '产品C'],
-        top: '10%',
-        orient: 'vertical',
-        right: 10,
-        textStyle: globalTextStyle
+        data: products,
+        top: 25,
+        textStyle: textStyle
       },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        top: '20%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'category',
+        data: regions,
+        axisLabel: {
+          interval: 0,
+          rotate: 30
+        }
+      },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: '产品A',
+          type: 'line',
+          smooth: true,
+          data: [10, 40, 15, 20, 45, 35, 60, 65]
+        },
+        {
+          name: '产品B',
+          type: 'line',
+          smooth: true,
+          data: [5, 20, 35, 10, 30, 50, 20, 40]
+        }
+      ]
+    });
+    
+    // 雷达图
+    createChart('radar-chart', {
+      color: colors,
+      tooltip: {},
       radar: {
+        radius: '60%',
+        center: ['50%', '55%'],
         indicator: [
-          { name: '市场份额', max: 100 },
-          { name: '品牌知名度', max: 100 },
-          { name: '用户满意度', max: 100 },
-          { name: '售后服务', max: 100 },
-          { name: '成本控制', max: 100 }
-        ]
+          { name: '南部', max: 100 },
+          { name: '宁夏', max: 100 },
+          { name: '湖南', max: 100 },
+          { name: '湖北', max: 100 },
+          { name: '北京', max: 100 }
+        ],
+        splitArea: {
+          areaStyle: {
+            color: ['rgba(255, 255, 255, 0.5)']
+          }
+        }
       },
       series: [{
-        name: '竞争力指标对比',
+        name: '消费者属性',
         type: 'radar',
+        data: [{
+          value: [80, 70, 90, 85, 75],
+          name: '消费属性',
+          areaStyle: {
+            opacity: 0.3
+          }
+        }]
+      }]
+    });
+    
+    // 旭日图
+    createChart('sunburst-chart', {
+      color: colors,
+      series: {
+        type: 'sunburst',
+        radius: ['20%', '90%'],
+        center: ['50%', '55%'],
+        data: [{
+          name: '北京',
+          value: 10,
+          children: [
+            { name: '朝阳', value: 4 },
+            { name: '海淀', value: 6 }
+          ]
+        }, {
+          name: '上海',
+          value: 20,
+          children: [
+            { name: '浦东', value: 12 },
+            { name: '静安', value: 8 }
+          ]
+        }, {
+          name: '广州',
+          value: 15,
+          children: [
+            { name: '天河', value: 8 },
+            { name: '越秀', value: 7 }
+          ]
+        }],
+        label: {
+          rotate: 'radial'
+        }
+      }
+    });
+    
+    // 散点图
+    createChart('scatter-chart', {
+      color: colors,
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        top: '10%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        name: '入店时间(h)',
+        nameLocation: 'end'
+      },
+      yAxis: {
+        type: 'value',
+        name: '成交率(%)'
+      },
+      series: [{
+        type: 'scatter',
+        symbolSize: 12,
         data: [
-          { value: [85, 90, 48, 50, 75], name: '产品A' },
-          { value: [78, 72, 79, 85, 97], name: '产品B' },
-          { value: [90, 95, 93, 78, 80], name: '产品C' }
+          [4, 40], [5, 58], [7, 65], [8, 80], 
+          [6, 56], [5.5, 45], [7.5, 70], [8.5, 75],
+          [9.5, 95], [6.5, 60], [4, 40]
         ]
       }]
     });
