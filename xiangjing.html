@@ -7,17 +7,17 @@
   <script src="china.js"></script>
   <style>
     :root {
-      --primary-color: #5470C6;
-      --secondary-color: #91CC75;
+      --primary-color: #3a7bd5;
+      --secondary-color: #00d2ff;
       --tertiary-color: #FAC858;
       --text-color: #333;
       --title-color: #2c3e50;
-      --bg-color: #f5f7fa;
+      --bg-color: #f8fafc;
       --card-bg: #fff;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --border-radius: 12px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      --border-radius: 16px;
       --font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-      --header-bg: linear-gradient(135deg, #5470C6 0%, #91CC75 100%);
+      --header-bg: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
       --header-text: #fff;
     }
     
@@ -43,24 +43,24 @@
       position: relative;
       z-index: 1;
     }
-     /* 添加渐变边框效果 */
-     h1::after {
+    
+    h1::after {
       content: '';
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, #FAC858, #EE6666, #73C0DE);
+      background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
     }
 
     .container {
       display: grid;
       grid-template-columns: 1fr 1.5fr 1fr;
       grid-template-rows: 1fr 1fr;
-      grid-gap: 15px;
+      grid-gap: 20px;
       height: calc(100% - 80px);
-      padding: 15px;
+      padding: 20px;
       box-sizing: border-box;
     }
 
@@ -69,11 +69,26 @@
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
       padding: 15px;
-      transition: box-shadow 0.3s ease;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      position: relative;
     }
 
     .chart-box:hover {
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+    
+    .chart-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--header-bg);
+      opacity: 0.7;
     }
 
     #left-top     { grid-column: 1; grid-row: 1; }
@@ -96,7 +111,7 @@
   <script>
     // 统一主题配置
     const theme = {
-      colors: ['#5470C6', '#91CC75', '#FAC858', '#EE6666', '#73C0DE', '#3BA272', '#FC8452', '#9A60B4', '#EA7CCC'],
+      colors: ['#3a7bd5', '#00d2ff', '#FAC858', '#3BA272', '#73C0DE', '#EE6666', '#FC8452', '#9A60B4', '#EA7CCC'],
       textStyle: {
         fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
         color: '#333',
@@ -543,18 +558,30 @@
       color: theme.colors.slice(0, 3),
       title: {
         ...theme.titleStyle,
-        text: '同行业同产品竞争力分析'
+        text: '同行业同产品竞争力分析',
+        top: 1,
+        left: 'center',
+        textStyle: {
+          fontSize: 16,
+          fontWeight: 'bold'
+        }
       },
       tooltip: {
         ...theme.tooltipStyle,
         trigger: 'item'
       },
       legend: {
-        ...theme.legendStyle,
+        textStyle: {
+          fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
+          fontSize: 10
+        },
+        itemWidth: 12,
+        itemHeight: 8,
+        itemGap: 5,
         data: ['产品A', '产品B', '产品C'],
         orient: 'vertical',
         right: 10,
-        top: 'center'
+        top: 35
       },
       radar: {
         indicator: [
@@ -562,9 +589,10 @@
           { name: '品牌知名度', max: 100 },
           { name: '用户满意度', max: 100 },
           { name: '售后服务', max: 100 },
-          { name: '成本控制', max: 100 }
+          { name: '成本控制', max: 100, axisLabel: { show: true, fontSize: 10, color: '#666' } }
         ],
-        radius: '65%',
+        radius: '75%',
+        center: ['50%', '60%'],
         splitNumber: 4,
         axisName: {
           color: '#666',
