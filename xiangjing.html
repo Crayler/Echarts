@@ -7,18 +7,18 @@
   <script src="china.js"></script>
   <style>
     :root {
-      --primary-color: #03a892;
-      --secondary-color: #64FFDA;
-      --tertiary-color: #1DE9B6;
-      --text-color: #333333;
-      --title-color: #333333;
-      --bg-color: #fffcf0;
+      --primary-color: #8BC34A;
+      --secondary-color: #AED581;
+      --tertiary-color: #C5E1A5;
+      --text-color: #33691E;
+      --title-color: #33691E;
+      --bg-color: #F1F8E9;
       --card-bg: #FFFFFF;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --shadow: 0 2px 8px rgba(139, 195, 74, 0.1);
       --border-radius: 12px;
       --font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-      --header-bg: #fffcf0;
-      --header-text: #333;
+      --header-bg: #F1F8E9;
+      --header-text: #33691E;
     }
     
     html, body {
@@ -125,10 +125,10 @@
   <script>
     // 统一主题配置
     const theme = {
-      colors: ['#03a892', '#f8b195', '#f67280', '#c06c84', '#6c5b7b', '#355c7d', '#99b898'],
+      colors: ['#8BC34A', '#AED581', '#C5E1A5', '#DCEDC8', '#689F38', '#558B2F', '#33691E'],
       textStyle: {
         fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-        color: '#555',
+        color: '#33691E',
         fontSize: 12
       },
       titleStyle: {
@@ -220,7 +220,13 @@
         ...theme.legendStyle,
         data: ['产品A', '产品B', '产品C']
       },
-      grid: theme.gridStyle,
+      grid: {
+        ...theme.gridStyle,
+        top: 70,      // 增加顶部空间
+        left: '5%',   // 减少左侧边距
+        right: '5%',  // 减少右侧边距
+        bottom: '10%' // 减少底部边距
+      },
       xAxis: {
         type: 'category',
         data: months,
@@ -319,7 +325,13 @@
         ...theme.legendStyle,
         data: ['产品A', '产品B', '产品C']
       },
-      grid: theme.gridStyle,
+      grid: {
+        ...theme.gridStyle,
+        top: 70,      // 增加顶部空间
+        left: '5%',   // 减少左侧边距
+        right: '5%',  // 减少右侧边距
+        bottom: '10%' // 减少底部边距
+      },
       xAxis: {
         type: 'category',
         data: months,
@@ -422,12 +434,12 @@
       visualMap: {
         min: 0,
         max: 10000,
-        left: 'right',
+        left: 'left',
         top: 'bottom',
         text: ['高', '低'],
         calculable: true,
         inRange: {
-          color: ['#E0F2F1', '#B2DFDB', '#80CBC4', '#4DB6AC', '#00897B']
+          color: ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#8BC34A', '#689F38', '#33691E']
         },
         textStyle: theme.textStyle
       },
@@ -442,7 +454,7 @@
             color: '#fff'
           },
           itemStyle: {
-            areaColor: '#389BB7',
+            areaColor: '#689F38',
             borderWidth: 1
           }
         },
@@ -522,7 +534,7 @@
       }));
 
     // 饼图配置
-    createChart('right-top', {
+    const pieChart = createChart('right-top', {
       color: theme.colors,
       title: {
         ...theme.titleStyle,
@@ -536,17 +548,13 @@
         }
       },
       legend: {
-        ...theme.legendStyle,
-        orient: 'vertical',
-        right: 10,
-        top: 'center',
-        data: regionSalesData.map(item => item.name)
+        show: false
       },
       series: [{
         name: '销售占比',
         type: 'pie',
-        radius: ['50%', '70%'],
-        center: ['40%', '50%'],
+        radius: ['45%', '65%'],
+        center: ['50%', '60%'],
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 6,
@@ -554,22 +562,64 @@
           borderWidth: 2
         },
         label: {
-          show: false,
-          position: 'center'
+          show: true,
+          formatter: '{b}:\n{d}%',
+          fontSize: 12,
+          position: 'outside'
         },
+        labelLine: {
+          show: true,
+          length: 15,
+          length2: 10
+        },
+        data: regionSalesData,
         emphasis: {
           label: {
             show: true,
-            fontSize: '16',
-            fontWeight: 'bold',
-            formatter: '{b}\n{d}%'
+            fontSize: 14,
+            fontWeight: 'bold'
+          },
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
-        },
-        labelLine: {
-          show: false
-        },
-        data: regionSalesData
-      }]
+        }
+      }],
+      graphic: {
+        type: 'text',
+        left: 'center',
+        top: '50%',
+        style: {
+          text: '总销售额\n' + totalSales + '万元',
+          textAlign: 'center',
+          fill: '#555',
+          fontSize: 16,
+          fontWeight: 'bold'
+        }
+      }
+    });
+
+    // 添加鼠标事件
+    pieChart.on('mouseover', params => {
+      pieChart.setOption({
+        graphic: {
+          style: {
+            text: params.name + '\n' + params.value + '万元\n' + 
+                  ((params.value / totalSales) * 100).toFixed(2) + '%',
+          }
+        }
+      });
+    });
+
+    pieChart.on('mouseout', () => {
+      pieChart.setOption({
+        graphic: {
+          style: {
+            text: '总销售额\n' + totalSales + '万元',
+          }
+        }
+      });
     });
 
     // 雷达图配置
