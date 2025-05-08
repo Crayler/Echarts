@@ -7,18 +7,18 @@
   <script src="china.js"></script>
   <style>
     :root {
-      --primary-color: #00BFA5;
+      --primary-color: #03a892;
       --secondary-color: #64FFDA;
       --tertiary-color: #1DE9B6;
-      --text-color: #263238;
-      --title-color: #004D40;
-      --bg-color: #E0F2F1;
+      --text-color: #333333;
+      --title-color: #333333;
+      --bg-color: #fffcf0;
       --card-bg: #FFFFFF;
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      --border-radius: 16px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --border-radius: 12px;
       --font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-      --header-bg: linear-gradient(135deg, #00BFA5 0%, #64FFDA 100%);
-      --header-text: #fff;
+      --header-bg: #fffcf0;
+      --header-text: #333;
     }
     
     html, body {
@@ -33,25 +33,18 @@
     h1 {
       text-align: center;
       margin: 0;
-      padding: 20px 0;
-      font-size: 28px;
+      padding: 15px 0;
+      font-size: 24px;
       color: var(--header-text);
       font-weight: 600;
       letter-spacing: 0.5px;
       background: var(--header-bg);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 1;
+      box-shadow: none;
+      border-bottom: 1px solid #eee8d5;
     }
     
     h1::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #00d2ff, #3a7bd5, #00d2ff);
+      display: none;
     }
 
     .container {
@@ -68,9 +61,9 @@
       background: var(--card-bg);
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 15px;
+      padding: 10px;
       transition: all 0.3s ease;
-      border: 1px solid rgba(0, 0, 0, 0.03);
+      border: none;
       overflow: hidden;
       position: relative;
     }
@@ -81,30 +74,19 @@
     }
     
     .chart-box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--header-bg);
-      opacity: 0.7;
+      display: none;
     }
     
-    /* 添加科技感背景 */
     .chart-box::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(circle at 10% 90%, rgba(0, 191, 165, 0.03) 0%, transparent 30%),
-        radial-gradient(circle at 90% 10%, rgba(100, 255, 218, 0.03) 0%, transparent 30%),
-        linear-gradient(135deg, rgba(0, 191, 165, 0.01) 0%, rgba(29, 233, 182, 0.01) 100%);
-      pointer-events: none;
-      z-index: 0;
+      display: none;
+    }
+    
+    .chart-title {
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
     }
     
     /* 确保图表内容在背景之上 */
@@ -123,42 +105,51 @@
 <body>
   <h1>2024年全国各地销售情况分析</h1>
   <div class="container">
-    <div id="left-top" class="chart-box"></div>
-    <div id="left-bottom" class="chart-box"></div>
-    <div id="center" class="chart-box"></div>
-    <div id="right-top" class="chart-box"></div>
-    <div id="right-bottom" class="chart-box"></div>
+    <div id="left-top" class="chart-box">
+      <div class="chart-title">一周内各数量统计</div>
+    </div>
+    <div id="left-bottom" class="chart-box">
+      <div class="chart-title">一周内各产品销售情况</div>
+    </div>
+    <div id="center" class="chart-box">
+      <div class="chart-title">全国销售地图</div>
+    </div>
+    <div id="right-top" class="chart-box">
+      <div class="chart-title">各大区年度销售占比</div>
+    </div>
+    <div id="right-bottom" class="chart-box">
+      <div class="chart-title">同行业同产品竞争力分析</div>
+    </div>
   </div>
 
   <script>
     // 统一主题配置
     const theme = {
-      colors: ['#00BFA5', '#64FFDA', '#1DE9B6', '#26A69A', '#80CBC4', '#4DB6AC', '#009688', '#00897B', '#00796B'],
+      colors: ['#03a892', '#f8b195', '#f67280', '#c06c84', '#6c5b7b', '#355c7d', '#99b898'],
       textStyle: {
         fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-        color: '#263238',
-        fontSize: 14
+        color: '#555',
+        fontSize: 12
       },
       titleStyle: {
         textStyle: {
-          fontSize: 16,
-          fontWeight: 'bold',
-          color: '#004D40',
-          fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif'
+          fontSize: 14,
+          fontWeight: 'normal',
+          color: '#555'
         },
         left: 'center',
-        top: 10
+        top: 5
       },
       legendStyle: {
         textStyle: {
           fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
           fontSize: 12
         },
-        top: 40,
+        top: 25,
         itemGap: 10
       },
       gridStyle: {
-        top: 80,
+        top: 60,
         left: '10%',
         right: '10%',
         bottom: '15%',
@@ -167,12 +158,12 @@
       tooltipStyle: {
         trigger: 'item',
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        borderColor: '#80CBC4',
+        borderColor: '#eee8d5',
         borderWidth: 1,
         padding: 10,
         textStyle: {
           fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-          color: '#263238',
+          color: '#555',
           fontSize: 12
         },
         extraCssText: 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border-radius: 4px;'
