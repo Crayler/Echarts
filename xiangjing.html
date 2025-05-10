@@ -33,8 +33,8 @@
     h1 {
       text-align: center;
       margin: 0;
-      padding: 15px 0;
-      font-size: 24px;
+      padding: 8px 0;  /* 从15px减小到8px */
+      font-size: 28px;
       color: var(--header-text);
       font-weight: 600;
       letter-spacing: 0.5px;
@@ -50,10 +50,10 @@
     .container {
       display: grid;
       grid-template-columns: 1fr 1.5fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      grid-gap: 20px;
-      height: calc(100% - 80px);
-      padding: 20px;
+      grid-template-rows: 1fr 1fr 1fr;
+      grid-gap: 5px;
+      height: calc(100% - 60px); /* 从80px减小到60px，增加容器高度 */
+      padding: 5px;
       box-sizing: border-box;
     }
 
@@ -61,7 +61,7 @@
       background: var(--card-bg);
       border-radius: var(--border-radius);
       box-shadow: var(--shadow);
-      padding: 10px;
+      padding: 3px;
       transition: all 0.3s ease;
       border: none;
       overflow: hidden;
@@ -69,8 +69,8 @@
     }
 
     .chart-box:hover {
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+      transform: translateY(-3px);
     }
     
     .chart-box::before {
@@ -82,11 +82,11 @@
     }
     
     .chart-title {
-      font-size: 14px;
+      font-size: 16px;  /* 从14px增加到16px */
       color: #555;
       text-align: center;
       margin-bottom: 10px;
-      font-weight: bold;
+      font-weight: bold;  /* 已经是bold，保持不变 */
     }
     
     /* 确保图表内容在背景之上 */
@@ -97,13 +97,42 @@
 
     #left-top     { grid-column: 1; grid-row: 1; }
     #left-bottom  { grid-column: 1; grid-row: 2; }
-    #center       { grid-column: 2; grid-row: 1 / span 2; }
+    #left-funnel  { grid-column: 1; grid-row: 3; }
+    #center       { grid-column: 2; grid-row: 1 / span 3; }
     #right-top    { grid-column: 3; grid-row: 1; }
     #right-bottom { grid-column: 3; grid-row: 2; }
+    #right-gauge  { grid-column: 3; grid-row: 3; }
+
+    .map-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 5px 0;
+      padding: 0 10%;
+    }
+
+    .stat-box {
+      background: rgba(139, 195, 74, 0.1);
+      border-radius: 8px;
+      padding: 5px 15px;
+      text-align: center;
+      border-left: 3px solid var(--primary-color);
+    }
+
+    .stat-title {
+      font-size: 12px;
+      color: var(--text-color);
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--title-color);
+    }
   </style>
 </head>
 <body>
-  <h1>2024年全国各地销售情况分析</h1>
+  <h1>2024年全国草本植物种子销售看板</h1>
   <div class="container">
     <div id="left-top" class="chart-box">
       <div class="chart-title">一周内各数量统计</div>
@@ -111,14 +140,41 @@
     <div id="left-bottom" class="chart-box">
       <div class="chart-title">一周内各产品销售情况</div>
     </div>
+    <div id="left-funnel" class="chart-box">
+      <div class="chart-title">销售转化漏斗图</div>
+    </div>
     <div id="center" class="chart-box">
-      <div class="chart-title">全国销售地图</div>
+
+      <!-- 添加统计信息容器 -->
+      <div id="map-stats-container" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; grid-gap: 10px; margin: 10px 0; padding: 0 10%;">
+        <div style="border-radius: 8px; padding: 5px 15px; text-align: center; border-left: 3px solid #8BC34A;">
+          <div style="font-size: 20px; color: #33691E; margin-bottom: 2px;">销售净利润</div>
+          <div style="font-size: 30px; font-weight: bold; color: #33691E;">¥ 93,856 万</div>
+        </div>
+        <div style="border-radius: 8px; padding: 5px 15px; text-align: center; border-left: 3px solid #8BC34A;">
+          <div style="font-size: 20px; color: #33691E; margin-bottom: 2px;">销售供应点</div>
+          <div style="font-size: 30px; font-weight: bold; color: #33691E;">324338 个</div>
+        </div>
+        <div style="border-radius: 8px; padding: 5px 15px; text-align: center; border-left: 3px solid #8BC34A;">
+          <div style="font-size: 20px; color: #33691E; margin-bottom: 2px;">客户总数</div>
+          <div style="font-size: 30px; font-weight: bold; color: #33691E;">895,245 位</div>
+        </div>
+        <div style="border-radius: 8px; padding: 5px 15px; text-align: center; border-left: 3px solid #8BC34A;">
+          <div style="font-size: 20px; color: #33691E; margin-bottom: 2px;">年增长率</div>
+          <div style="font-size: 30px; font-weight: bold; color: #33691E;">24.6 %</div>
+        </div>
+      </div>
+      <!-- 地图容器 -->
+      <div id="map-container" style="width: 100%; height: calc(100% - 30px); margin-top: -80px;"></div>
     </div>
     <div id="right-top" class="chart-box">
       <div class="chart-title">各大区年度销售占比</div>
     </div>
     <div id="right-bottom" class="chart-box">
       <div class="chart-title">同行业同产品竞争力分析</div>
+    </div>
+    <div id="right-gauge" class="chart-box">
+      <div class="chart-title">年度任务完成指标</div>
     </div>
   </div>
 
@@ -133,23 +189,18 @@
       },
       titleStyle: {
         textStyle: {
-          fontSize: 14,
-          fontWeight: 'normal',
+          fontSize: 16,  // 从14px增加到16px
+          fontWeight: 'bold',  // 从'normal'改为'bold'
           color: '#555'
         },
         left: 'center',
         top: 5
       },
       legendStyle: {
-        textStyle: {
-          fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-          fontSize: 12
-        },
-        top: 25,
-        itemGap: 10
+        show: false // 设置为false以隐藏所有图例
       },
       gridStyle: {
-        top: 60,
+        top: 40, // 由于没有图例，可以减少顶部空间
         left: '10%',
         right: '10%',
         bottom: '15%',
@@ -421,12 +472,8 @@
     ]; 
 
     // 地图图表
-    createChart('center', {
+    createChart('map-container', {
       color: theme.colors,
-      title: {
-        ...theme.titleStyle,
-        text: '全国销售地图'
-      },
       tooltip: {
         ...theme.tooltipStyle,
         formatter: params => `${params.name}<br/><span style="color:${theme.colors[0]}">销售额: ${params.value || 0} 万元</span>`
@@ -434,20 +481,25 @@
       visualMap: {
         min: 0,
         max: 10000,
-        left: 'left',
+        left: '5%', // 从'left'改为'5%'，向右移动
         top: 'bottom',
+        padding: [0, 0, 75, 0],
         text: ['高', '低'],
         calculable: true,
         inRange: {
           color: ['#F1F8E9', '#DCEDC8', '#C5E1A5', '#AED581', '#8BC34A', '#689F38', '#33691E']
         },
-        textStyle: theme.textStyle
+        textStyle: theme.textStyle,
+        itemWidth: 15,       // 添加这行，减小宽度
+        itemHeight: 80,      // 添加这行，减小高度
+        textGap: 5,          // 添加这行，减小文字与图形的间距
+        fontSize: 10         // 添加这行，减小文字大小
       },
       series: [{
         name: '销售额',
         type: 'map',
         map: 'china',
-        roam: true,
+        roam: false, // 禁用地图缩放和平移
         emphasis: {
           label: {
             show: true,
@@ -563,7 +615,7 @@
         },
         label: {
           show: true,
-          formatter: '{b}:\n{d}%',
+          formatter: '{b}:{d}%',
           fontSize: 12,
           position: 'outside'
         },
@@ -639,19 +691,6 @@
         ...theme.tooltipStyle,
         trigger: 'item'
       },
-      legend: {
-        textStyle: {
-          fontFamily: 'Microsoft YaHei, PingFang SC, sans-serif',
-          fontSize: 10
-        },
-        itemWidth: 12,
-        itemHeight: 8,
-        itemGap: 5,
-        data: ['产品A', '产品B', '产品C'],
-        orient: 'vertical',
-        right: 10,
-        top: 35
-      },
       radar: {
         indicator: [
           { name: '市场份额', max: 100 },
@@ -660,17 +699,18 @@
           { name: '售后服务', max: 100 },
           { name: '成本控制', max: 100 }
         ],
-        radius: '75%',
+        radius: '65%',        // 从75%减小到65%
         center: ['50%', '60%'],
         splitNumber: 4,
         shape: 'polygon',
         axisName: {
           color: '#00796B',
-          fontSize: 12,
+          fontSize: 10,       // 从12减小到10
+          padding: [3, 5],
           backgroundColor: 'rgba(100, 255, 218, 0.1)',
-          borderRadius: 3,
-          padding: [3, 5]
+          borderRadius: 3
         },
+        nameGap: 5,           // 添加此行，减小标签与图形的距离
         splitLine: {
           lineStyle: {
             color: 'rgba(0, 191, 165, 0.2)'
@@ -734,6 +774,155 @@
             }
           }
         ]
+      }]
+    });
+
+    // 漏斗图配置
+    createChart('left-funnel', {
+      color: theme.colors,
+      title: {
+        ...theme.titleStyle,
+        text: '销售转化漏斗图'
+      },
+      tooltip: {
+        ...theme.tooltipStyle,
+        formatter: '{b}: {c}人 ({d}%)'
+      },
+      series: [{
+        name: '销售转化',
+        type: 'funnel',
+        left: '10%',
+        top: 40,
+        bottom: 10,
+        width: '80%',
+        min: 0,
+        max: 1000,
+        minSize: '20%',    // 最小宽度设为20%，避免底部太窄
+        maxSize: '100%',   // 最大宽度
+        sort: 'descending',
+        gap: 4,            // 增加间隔
+        label: {
+          show: true,
+          position: 'inside',
+          formatter: '{b}: {c}人',
+          fontSize: 10,
+          color: '#fff',
+          fontWeight: 'bold',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+        },
+        labelLine: {
+          show: false      // 隐藏标签线
+        },
+        itemStyle: {
+          borderColor: '#fff',
+          borderWidth: 1,
+          borderRadius: 2, // 添加圆角
+          shadowBlur: 5,
+          shadowColor: 'rgba(0,0,0,0.1)'
+        },
+        emphasis: {
+          label: {
+            fontSize: 12,
+            fontWeight: 'bold'
+          },
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)'
+          }
+        },
+        data: [
+          { value: 1000, name: '访问' },
+          { value: 800, name: '咨询' },
+          { value: 600, name: '订单' },
+          { value: 450, name: '付款' },
+          { value: 380, name: '成交' }
+        ]
+      }]
+    });
+
+    // 仪表盘图配置
+    createChart('right-gauge', {
+      color: theme.colors,
+      title: {
+        ...theme.titleStyle,
+        text: '年度任务完成度'
+      },
+      tooltip: {
+        ...theme.tooltipStyle,
+        formatter: '{b}: {c}%'
+      },
+      series: [{
+        name: '任务完成率',
+        type: 'gauge',
+        radius: '80%',
+        center: ['50%', '55%'],  // 从'60%'改为'55%'，向上移动
+        startAngle: 225,
+        endAngle: -45,
+        min: 0,
+        max: 100,
+        splitNumber: 10,
+        axisLine: {
+          lineStyle: {
+            width: 10,
+            color: [
+              [0.2, '#C5E1A5'],  // 浅绿色
+              [0.8, '#8BC34A'],  // 中绿色
+              [1, '#33691E']     // 深绿色
+            ]
+          }
+        },
+        pointer: {
+          icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+          length: '12%',
+          width: 6,
+          offsetCenter: [0, '-60%'],
+          itemStyle: {
+            color: 'auto'
+          }
+        },
+        axisTick: {
+          length: 12,
+          lineStyle: {
+            color: 'auto',
+            width: 1
+          }
+        },
+        splitLine: {
+          length: 20,
+          lineStyle: {
+            color: 'auto',
+            width: 2
+          }
+        },
+        axisLabel: {
+          color: '#999',
+          fontSize: 10,
+          distance: -60,
+          formatter: function(value) {
+            if (value === 0 || value === 100) {
+              return value + '%';
+            } else {
+              return '';
+            }
+          }
+        },
+        title: {
+          offsetCenter: [0, '-25%'],  // 从'-20%'改为'-25%'，向上移动
+          fontSize: 14
+        },
+        detail: {
+          fontSize: 25,
+          offsetCenter: [0, '5%'],  // 从'10%'改为'5%'，向上移动
+          valueAnimation: true,
+          formatter: function(value) {
+            return value + '%';
+          },
+          color: 'auto'
+        },
+        data: [{
+          value: 78.6,
+          name: '完成率'
+        }]
       }]
     });
   </script>
