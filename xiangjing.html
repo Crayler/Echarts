@@ -135,16 +135,15 @@
   <h1>2024年全国草本植物种子销售看板</h1>
   <div class="container">
     <div id="left-top" class="chart-box">
-      <div class="chart-title">一周内各数量统计</div>
+      <div class="chart-title">地区年度销售利润趋势</div>
     </div>
     <div id="left-bottom" class="chart-box">
-      <div class="chart-title">一周内各产品销售情况</div>
+      <div class="chart-title">三种种子类型每月销售数据</div>
     </div>
     <div id="left-funnel" class="chart-box">
-      <div class="chart-title">销售转化漏斗图</div>
+      <div class="chart-title">销售各环节人数</div>
     </div>
     <div id="center" class="chart-box">
-
       <!-- 添加统计信息容器 -->
       <div id="map-stats-container" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; grid-gap: 10px; margin: 10px 0; padding: 0 10%;">
         <div style="border-radius: 8px; padding: 5px 15px; text-align: center; border-left: 3px solid #8BC34A;">
@@ -221,14 +220,6 @@
       }
     };
 
-    function createChart(id, option, onClick) {
-      const chart = echarts.init(document.getElementById(id));
-      chart.setOption(option);
-      window.addEventListener('resize', () => chart.resize());
-      if (onClick) chart.on('click', onClick);
-      return chart;
-    }
-
     const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
     function getCitySalesData(city) {
@@ -256,8 +247,10 @@
       };
     }
 
-    // 折线图配置
-    let lineChart = createChart('left-top', {
+    // 折线图配置（左上）
+    let lineChartDom = document.getElementById('left-top');
+    let lineChart = echarts.init(lineChartDom);
+    lineChart.setOption({
       color: theme.colors,
       title: {
         ...theme.titleStyle,
@@ -357,9 +350,12 @@
         }
       ]
     });
+    window.addEventListener('resize', () => lineChart.resize());
 
-    // 柱状图配置
-    let barChart = createChart('left-bottom', {
+    // 柱状图配置（左中）
+    let barChartDom = document.getElementById('left-bottom');
+    let barChart = echarts.init(barChartDom);
+    barChart.setOption({
       color: theme.colors,
       title: {
         ...theme.titleStyle,
@@ -432,8 +428,75 @@
         }
       ]
     });
+    window.addEventListener('resize', () => barChart.resize());
 
-    // 地图数据
+    // 漏斗图配置（左下）
+    let funnelChartDom = document.getElementById('left-funnel');
+    let funnelChart = echarts.init(funnelChartDom);
+    funnelChart.setOption({
+      color: theme.colors,
+      title: {
+        ...theme.titleStyle,
+        text: '销售各环节人数'
+      },
+      tooltip: {
+        ...theme.tooltipStyle,
+        formatter: '{b}: {c}人 ({d}%)'
+      },
+      series: [{
+        name: '销售转化',
+        type: 'funnel',
+        left: '10%',
+        top: 40,
+        bottom: 10,
+        width: '80%',
+        min: 0,
+        max: 1000,
+        minSize: '20%',    // 最小宽度设为20%，避免底部太窄
+        maxSize: '100%',   // 最大宽度
+        sort: 'descending',
+        gap: 4,            // 增加间隔
+        label: {
+          show: true,
+          position: 'inside',
+          formatter: '{b}: {c}人',
+          fontSize: 10,
+          color: '#fff',
+          fontWeight: 'bold',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+        },
+        labelLine: {
+          show: false      // 隐藏标签线
+        },
+        itemStyle: {
+          borderColor: '#fff',
+          borderWidth: 1,
+          borderRadius: 2, // 添加圆角
+          shadowBlur: 5,
+          shadowColor: 'rgba(0,0,0,0.1)'
+        },
+        emphasis: {
+          label: {
+            fontSize: 12,
+            fontWeight: 'bold'
+          },
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.3)'
+          }
+        },
+        data: [
+          { value: 1000, name: '访问' },
+          { value: 800, name: '咨询' },
+          { value: 600, name: '订单' },
+          { value: 450, name: '付款' },
+          { value: 380, name: '成交' }
+        ]
+      }]
+    });
+    window.addEventListener('resize', () => funnelChart.resize());
+
+    // 地图数据（中部）
     const mapData = [
       { name: '北京', value: 1205 },
       { name: '上海', value: 2000 },
@@ -472,7 +535,9 @@
     ]; 
 
     // 地图图表
-    createChart('map-container', {
+    let mapChartDom = document.getElementById('map-container');
+    let mapChart = echarts.init(mapChartDom);
+    mapChart.setOption({
       color: theme.colors,
       tooltip: {
         ...theme.tooltipStyle,
@@ -522,7 +587,9 @@
         },
         data: mapData
       }]
-    }, function (params) {
+    });
+    window.addEventListener('resize', () => mapChart.resize());
+    mapChart.on('click', function (params) {
       const city = params.name;
       const newSales = getCitySalesData(city);
       const newProducts = getCityProductData(city);
@@ -585,8 +652,10 @@
         }
       }));
 
-    // 饼图配置
-    const pieChart = createChart('right-top', {
+    // 饼图配置（右上）
+    let pieChartDom = document.getElementById('right-top');
+    let pieChart = echarts.init(pieChartDom);
+    pieChart.setOption({
       color: theme.colors,
       title: {
         ...theme.titleStyle,
@@ -646,11 +715,12 @@
           text: '总销售额\n' + totalSales + '万元',
           textAlign: 'center',
           fill: '#555',
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: 'bold'
         }
       }
     });
+    window.addEventListener('resize', () => pieChart.resize());
 
     // 添加鼠标事件
     pieChart.on('mouseover', params => {
@@ -674,8 +744,10 @@
       });
     });
 
-    // 雷达图配置
-    createChart('right-bottom', {
+    // 雷达图配置（右中）
+    let radarChartDom = document.getElementById('right-bottom');
+    let radarChart = echarts.init(radarChartDom);
+    radarChart.setOption({
       color: theme.colors.slice(0, 3),
       title: {
         ...theme.titleStyle,
@@ -776,72 +848,14 @@
         ]
       }]
     });
+    window.addEventListener('resize', () => radarChart.resize());
 
-    // 漏斗图配置
-    createChart('left-funnel', {
-      color: theme.colors,
-      title: {
-        ...theme.titleStyle,
-        text: '销售转化漏斗图'
-      },
-      tooltip: {
-        ...theme.tooltipStyle,
-        formatter: '{b}: {c}人 ({d}%)'
-      },
-      series: [{
-        name: '销售转化',
-        type: 'funnel',
-        left: '10%',
-        top: 40,
-        bottom: 10,
-        width: '80%',
-        min: 0,
-        max: 1000,
-        minSize: '20%',    // 最小宽度设为20%，避免底部太窄
-        maxSize: '100%',   // 最大宽度
-        sort: 'descending',
-        gap: 4,            // 增加间隔
-        label: {
-          show: true,
-          position: 'inside',
-          formatter: '{b}: {c}人',
-          fontSize: 10,
-          color: '#fff',
-          fontWeight: 'bold',
-          textShadow: '0 1px 2px rgba(0,0,0,0.2)'
-        },
-        labelLine: {
-          show: false      // 隐藏标签线
-        },
-        itemStyle: {
-          borderColor: '#fff',
-          borderWidth: 1,
-          borderRadius: 2, // 添加圆角
-          shadowBlur: 5,
-          shadowColor: 'rgba(0,0,0,0.1)'
-        },
-        emphasis: {
-          label: {
-            fontSize: 12,
-            fontWeight: 'bold'
-          },
-          itemStyle: {
-            shadowBlur: 10,
-            shadowColor: 'rgba(0,0,0,0.3)'
-          }
-        },
-        data: [
-          { value: 1000, name: '访问' },
-          { value: 800, name: '咨询' },
-          { value: 600, name: '订单' },
-          { value: 450, name: '付款' },
-          { value: 380, name: '成交' }
-        ]
-      }]
-    });
+    
 
-    // 仪表盘图配置
-    createChart('right-gauge', {
+    // 仪表盘图配置（右下）
+    let gaugeChartDom = document.getElementById('right-gauge');
+    let gaugeChart = echarts.init(gaugeChartDom);
+    gaugeChart.setOption({
       color: theme.colors,
       title: {
         ...theme.titleStyle,
@@ -925,6 +939,7 @@
         }]
       }]
     });
+    window.addEventListener('resize', () => gaugeChart.resize());
   </script>
 </body>
 </html>
